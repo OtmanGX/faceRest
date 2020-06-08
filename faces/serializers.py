@@ -16,13 +16,16 @@ class FaceDataSetSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
         old_image_path = instance.image.path
         if(old_image_path):
             instance.image.save(os.path.basename(instance.image.name),
                                 instance.image.file)
+            print(validated_data.get("dataset_type"))
+            print(instance.image.path)
             if os.path.isfile(old_image_path):
                     os.remove(old_image_path)
-        return super().update(instance, validated_data)
+        return instance
 
 class MoveFaceSerializer(serializers.Serializer):
     id_person = serializers.IntegerField()
@@ -37,8 +40,7 @@ class MoveFaceSerializer(serializers.Serializer):
                 dataset_type = self.validated_data.get('dataset'),
                 image=face_detected.image
             )
+
             face_to_save.image.save(os.path.basename(face_to_save.image.name),
                                     face_to_save.image.file)
             face_detected.delete()
-        # return super().save(**kwargs)
-
