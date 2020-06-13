@@ -1,6 +1,7 @@
-Django~=2.2.12
+Django~=2.2
 djangorestframework~=3.11.0
 djangorestframework-simplejwt
+sqlparse~=0.2.4
 django-cors-headers
 django-filter
 djongo

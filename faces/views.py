@@ -16,6 +16,15 @@ class FaceDetectedViewSet(viewsets.ModelViewSet):
     serializer_class = FaceDetectedSerializer
     pagination_class = StandardResultsSetPagination
     filter_backends = [FilterSearch, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['label__name', ]
+
+    @action(detail=False, methods=['delete'])
+    def delete(self, request):
+        # self.queryset.
+        if self.queryset.delete():
+            return Response({"message": "Got some data!", "data": request.data})
+        else:
+            return Response("delete error", status=status.HTTP_400_BAD_REQUEST)
 
 
 class FaceDataSetViewSet(viewsets.ModelViewSet):
@@ -33,6 +42,3 @@ class FaceDataSetViewSet(viewsets.ModelViewSet):
             return Response({"message": "Got some data!", "data": request.data})
         else :
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-

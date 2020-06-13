@@ -59,6 +59,19 @@ class PersonSerializer(serializers.ModelSerializer):
             return person
         return super(PersonSerializer, self).create(validated_data)
 
+    def update(self, instance, validated_data):
+        person = instance
+        if validated_data.get('labels', False):
+            labels_raw = validated_data.pop('labels')
+            labels = [Label.objects.get_or_create(name=label['name'])[0]
+                      for label in labels_raw]
+
+            person = super().update(instance, validated_data)
+            person.labels.set(labels)
+        else:
+            person = super().update(instance, validated_data)
+
+        return person
 
     class Meta:
         model = Person

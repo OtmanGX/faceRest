@@ -1,5 +1,6 @@
 from django.db import models
 from django.dispatch import receiver
+from django.db.models.signals import post_delete
 from persons.models import Person
 import os
 
@@ -18,11 +19,12 @@ class FaceDetected(models.Model):
     image = models.ImageField(blank=True, upload_to=upload_image_path)
     label = models.ForeignKey(Person, related_name='faces', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    instate = models.BooleanField(default=True)
     precision = models.FloatField(blank=True)
-    unknown_number = models.SmallIntegerField(blank=True, default=0)
+    unknown_number = models.SmallIntegerField(blank=True)
 
     class Meta:
-        ordering = ['created_at']
+        ordering = ['-created_at']
 
 
 class FaceDataSet(models.Model):
@@ -34,21 +36,31 @@ class FaceDataSet(models.Model):
     class Meta:
         ordering = ['created_at']
 
+# def auto_delete_file(sender, instance, **kwargs):
+#     print("receiver called")
+#     if instance.image:
+#         if os.path.isfile(instance.image.path):
+#             instance.image.delete()
+
+# post_delete.connect(auto_delete_file, sender='faces.')
 
 @receiver(models.signals.post_delete, sender=FaceDetected)
-def auto_delete_file(sender, instance, **kwargs):
-    print("receiver called")
+def auto_delete_file_detected(sender, instance, **kwargs):
+    # print("receiver called")
     if instance.image:
         if os.path.isfile(instance.image.path):
-            instance.image.delete()
+            instance.image.delete(False)
+
+# @receiver(models.signals.post_delete, sender=FaceDetected)
+
 
 
 @receiver(models.signals.post_delete, sender=FaceDataSet)
 def auto_delete_file(sender, instance, **kwargs):
-    print("receiver called")
+    # print("receiver called")
     if instance.image:
         if os.path.isfile(instance.image.path):
-            instance.image.delete()
+            instance.image.delete(False)
 
 #
 # @receiver(models.signals.pre_save, sender=FaceDataSet)

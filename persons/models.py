@@ -14,7 +14,7 @@ class Label(models.Model):
 
 class Person(models.Model):
     name = models.CharField(max_length=35, blank=False, unique=True)
-    avatar = models.ImageField(blank=True, upload_to=upload_image_path)
+    avatar = models.ImageField(blank=True, null=True, upload_to=upload_image_path)
     matricule = models.CharField(max_length=12, unique=True, null=True, blank=True)
     age = models.SmallIntegerField(blank=True, null=True)
     labels = models.ManyToManyField(Label, related_name='persons', blank=True)

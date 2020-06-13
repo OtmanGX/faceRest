@@ -23,7 +23,7 @@ from faces import views as faces_views
 from rest_framework_simplejwt import views as jwt_views
 from rest_framework import routers
 from django.conf.urls.static import static
-from system.views import train_info_view, train_view, conf_view
+from system.views import train_info_view, train_view, conf_view, running_view, dashboard_view
 
 router = routers.DefaultRouter()
 router.register(r'persons', persons_views.PersonViewSet, basename='Persons')
@@ -37,6 +37,8 @@ urlpatterns = [
     path('', include(router.urls)),
     path('system/train_info', train_info_view, name='train_info'),
     path('system/train', train_view, name='train'),
+    path('system/running', running_view, name='running'),
+    path('dashboard', dashboard_view, name='dashboard'),
     path('system/conf', conf_view, name='conf'),
     path('personsl/', persons_views.persons_list),
     path('person/<int:pk>/', persons_views.PersonDetail.as_view()),

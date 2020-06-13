@@ -3,6 +3,7 @@ from rest_framework import serializers
 from faces.models import FaceDetected, FaceDataSet, DATASET_TYPES
 import os
 
+
 class FaceDetectedSerializer(serializers.ModelSerializer):
     class Meta:
         model = FaceDetected
@@ -38,9 +39,10 @@ class MoveFaceSerializer(serializers.Serializer):
             face_to_save = FaceDataSet.objects.create(
                 label_id = self.validated_data.get('id_person'),
                 dataset_type = self.validated_data.get('dataset'),
-                image=face_detected.image
+                # image=face_detected.image
             )
 
-            face_to_save.image.save(os.path.basename(face_to_save.image.name),
-                                    face_to_save.image.file)
+            face_to_save.image.save(os.path.basename(face_detected.image.name),
+                                    face_detected.image.file)
+            face_to_save.save()
             face_detected.delete()
