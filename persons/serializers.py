@@ -3,9 +3,8 @@ from collections import OrderedDict
 from rest_framework import serializers
 from rest_framework.fields import empty
 from rest_framework.utils import json
-
+import os
 from .models import Person, Label
-
 
 class LabelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,22 +21,10 @@ class LabelSerializer2(serializers.ModelSerializer):
 class PersonSerializer(serializers.ModelSerializer):
     labels = LabelSerializer2(many=True, required=False)
 
-    # def to_internal_value(self, data):
-    #     if isinstance(data['labels'],str):
-    #         data['labels'] = json.loads(data['labels'])
-    #     print(data)
-    #     return super().to_internal_value(data)
-
     def run_validation(self, data=empty):
         # print(data)
         return super().run_validation(data)
 
-    # def validate_labels(self, value):
-    #     print(value)
-    #     if isinstance(value, str):
-    #         value = json.loads(value)
-    #     print(value)
-    #     return value
 
     def create(self, validated_data):
         person = None
@@ -60,7 +47,6 @@ class PersonSerializer(serializers.ModelSerializer):
         return super(PersonSerializer, self).create(validated_data)
 
     def update(self, instance, validated_data):
-        person = instance
         if validated_data.get('labels', False):
             labels_raw = validated_data.pop('labels')
             labels = [Label.objects.get_or_create(name=label['name'])[0]

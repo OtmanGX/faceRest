@@ -17,6 +17,7 @@ class FaceDetectedViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
     filter_backends = [FilterSearch, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['label__name', ]
+    # filter_fields = ['label', 'label__isnull', 'instate']
 
     @action(detail=False, methods=['delete'])
     def delete(self, request):

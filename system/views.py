@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
-from facereco.train.MFaceNet_LoadModel_SVM import pre_train_information, train
+from facereco.train.MFaceNet_LoadModel_SVM import pre_train_information, total_train
 from facereco import write_conf, get_conf
 from psutil import process_iter
 from persons.models import Person
@@ -43,7 +43,7 @@ def running_view(request):
 
 @api_view(['GET'])
 def train_view(request):
-    result = train()
+    result = total_train()
     return Response(result)
 
 @api_view(['GET'])

@@ -11,7 +11,7 @@ def upload_image_path(instance, filename):
     if isinstance(instance, FaceDetected):
         return os.sep.join(["detected", instance.label.name, filename])
     else:
-        return os.sep.join(["dataset", instance.dataset_type.lower(),
+        return os.sep.join(["dataset"+instance.model, instance.dataset_type.lower(),
                             instance.label.name, filename]);
 
 
@@ -21,8 +21,6 @@ class FaceDetected(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     instate = models.BooleanField(default=True)
     precision = models.FloatField(blank=True)
-    unknown_number = models.SmallIntegerField(blank=True)
-
     class Meta:
         ordering = ['-created_at']
 
@@ -32,6 +30,7 @@ class FaceDataSet(models.Model):
     label = models.ForeignKey(Person, related_name='faces_dataset', on_delete=models.CASCADE, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     dataset_type = models.CharField(choices=DATASET_TYPES, default='train', max_length=10)
+    model = models.CharField(max_length=35, default="", blank=True)
 
     class Meta:
         ordering = ['created_at']
