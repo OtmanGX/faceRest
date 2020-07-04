@@ -6,6 +6,7 @@ from django.dispatch import receiver
 import shutil
 from facereco.train.MFaceNet_LoadModel_SVM import save_labels, clean
 
+
 def upload_image_path(instance, filename):
     return os.sep.join(["avatars", filename]);
 
@@ -56,9 +57,11 @@ def auto_delete_file(sender, instance, **kwargs):
         shutil.rmtree(os.path.join(PATH_TEST, instance.name))
     except FileNotFoundError:
         pass
-    if Person.objects.count()<2:
+    if Person.objects.count() < 2:
         print("smaller than 2")
         clean()
+    else:
+        save_labels()
 
 
 def rename_dataset(objs, new_name):

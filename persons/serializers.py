@@ -6,6 +6,7 @@ from rest_framework.utils import json
 import os
 from .models import Person, Label
 
+
 class LabelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Label
@@ -25,7 +26,6 @@ class PersonSerializer(serializers.ModelSerializer):
         # print(data)
         return super().run_validation(data)
 
-
     def create(self, validated_data):
         person = None
         if validated_data.get('labels', False):
@@ -36,11 +36,11 @@ class PersonSerializer(serializers.ModelSerializer):
             person = Person.objects.create(**validated_data)
             person.labels.set(labels)
         if validated_data.get('matricule', False) in (False, ''):
-            if not person :
+            if not person:
                 person = Person.objects.create(**validated_data)
-            if person.matricule=='':
-                person.matricule = person.name[:3].upper() +\
-                    hex(person.id)[2:].upper()
+            if person.matricule == '':
+                person.matricule = person.name[:3].upper() + \
+                                   hex(person.id)[2:].upper()
             person.save()
         if person is not None:
             return person

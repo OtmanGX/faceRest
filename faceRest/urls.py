@@ -30,19 +30,22 @@ router.register(r'persons', persons_views.PersonViewSet, basename='Persons')
 router.register(r'labels', persons_views.LabelViewSet, basename='Labels')
 router.register(r'detfaces', faces_views.FaceDetectedViewSet, basename='detfaces')
 router.register(r'dataset', faces_views.FaceDataSetViewSet, basename='dataset')
+router.register(r'pointage', faces_views.PointageViewSet, basename='pointage')
 # router.register('person/<int:pk>', persons_views.PersonDetail)
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('', include(router.urls)),
+    # System
     path('system/train_info', train_info_view, name='train_info'),
     path('system/train', train_view, name='train'),
     path('system/running', running_view, name='running'),
-    path('dashboard', dashboard_view, name='dashboard'),
     path('system/conf', conf_view, name='conf'),
+    path('dashboard', dashboard_view, name='dashboard'),
     path('personsl/', persons_views.persons_list),
     path('person/<int:pk>/', persons_views.PersonDetail.as_view()),
     path('hello/', core_views.HelloView.as_view(), name='hello'),
+    # Auth
     path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

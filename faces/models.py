@@ -11,8 +11,17 @@ def upload_image_path(instance, filename):
     if isinstance(instance, FaceDetected):
         return os.sep.join(["detected", instance.label.name, filename])
     else:
-        return os.sep.join(["dataset"+instance.model, instance.dataset_type.lower(),
-                            instance.label.name, filename]);
+        return os.sep.join(["dataset" + instance.model, instance.dataset_type.lower(),
+                            instance.label.name, filename])
+
+
+class Pointage(models.Model):
+    person = models.ForeignKey(Person, related_name='pointages', on_delete=models.CASCADE)
+    date_entree = models.DateTimeField(null=True)
+    date_sortie = models.DateTimeField(null=True)
+
+    class Meta:
+        ordering = ['-id']
 
 
 class FaceDetected(models.Model):
@@ -21,6 +30,7 @@ class FaceDetected(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     instate = models.BooleanField(default=True)
     precision = models.FloatField(blank=True)
+
     class Meta:
         ordering = ['-created_at']
 
@@ -34,6 +44,7 @@ class FaceDataSet(models.Model):
 
     class Meta:
         ordering = ['created_at']
+
 
 # def auto_delete_file(sender, instance, **kwargs):
 #     print("receiver called")
@@ -50,8 +61,8 @@ def auto_delete_file_detected(sender, instance, **kwargs):
         if os.path.isfile(instance.image.path):
             instance.image.delete(False)
 
-# @receiver(models.signals.post_delete, sender=FaceDetected)
 
+# @receiver(models.signals.post_delete, sender=FaceDetected)
 
 
 @receiver(models.signals.post_delete, sender=FaceDataSet)

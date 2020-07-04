@@ -2,7 +2,6 @@ from django.http.response import JsonResponse
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets, filters
 from rest_framework.decorators import api_view
-
 from faceRest.filters import FilterSearch
 from .serializers import PersonSerializer, LabelSerializer
 from .models import Person, Label

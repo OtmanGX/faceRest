@@ -5,3 +5,4 @@ sqlparse~=0.2.4
 django-cors-headers
 django-filter
 djongo
+python-dateutil

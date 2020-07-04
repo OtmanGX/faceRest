@@ -11,7 +11,8 @@ from facereco.train.MFaceNet_LoadModel_SVM import pre_train_information, total_t
 from facereco import write_conf, get_conf
 from psutil import process_iter
 from persons.models import Person
-from faces.models import FaceDetected, FaceDataSet
+from faces.models import FaceDetected, FaceDataSet, Pointage
+
 
 def facereco_is_running():
     for p in process_iter(["name"]):
@@ -25,9 +26,10 @@ def facereco_is_running():
 def dashboard_view(request):
     result = {}
     result["persons"] = Person.objects.count()
+    result["pointage"] = Pointage.objects.count()
     result["detected"] = FaceDetected.objects.count()
-    result["train"] =  FaceDataSet.objects.filter(dataset_type='Train').count()
-    result["test"] =  FaceDataSet.objects.filter(dataset_type='Test').count()
+    result["train"] = FaceDataSet.objects.filter(dataset_type='Train').count()
+    result["test"] = FaceDataSet.objects.filter(dataset_type='Test').count()
     return Response(result)
 
 
