@@ -10,7 +10,7 @@ from .models import Person, Label
 class PersonViewSet(viewsets.ModelViewSet):
     queryset = Person.objects.all()
     serializer_class = PersonSerializer
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter, FilterSearch]
+    filter_backends = [filters.OrderingFilter, FilterSearch]
     search_fields = ['name', 'age']
     filter_fields = ['name', 'age', 'active']
     # permission_classes = [IsAuthenticated]

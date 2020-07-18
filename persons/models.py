@@ -4,7 +4,7 @@ from facereco import PATH_TRAIN, PATH_TEST
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 import shutil
-from facereco.train.MFaceNet_LoadModel_SVM import save_labels, clean
+from facereco.train.MFaceNet_LoadModel_SVM import save_labels, clean, total_train
 
 
 def upload_image_path(instance, filename):
@@ -44,31 +44,35 @@ def auto_rename_dataset(sender, instance, **kwargs):
                 except Exception:
                     pass
                 rename_dataset(instance.faces_dataset.all(), new_name)
-                save_labels()
+                if Person.objects.count() >= 2:
+                    total_train()
+                    # save_labels()
 
 
 @receiver(models.signals.post_delete, sender=Person)
 def auto_delete_file(sender, instance, **kwargs):
+    print("signal delete")
     if instance.avatar:
         if os.path.isfile(instance.avatar.path):
             instance.avatar.delete()
     try:
-        shutil.rmtree(os.path.join(PATH_TRAIN, instance.name))
-        shutil.rmtree(os.path.join(PATH_TEST, instance.name))
-    except FileNotFoundError:
+        paths = (os.path.join(PATH_TRAIN, instance.name),
+                 os.path.join(PATH_TEST, instance.name))
+        for path in paths:
+            if os.path.exists(path):
+                shutil.rmtree(path)
+    except OSError:
         pass
     if Person.objects.count() < 2:
         print("smaller than 2")
         clean()
     else:
-        save_labels()
+        total_train()
 
 
 def rename_dataset(objs, new_name):
     for obj in objs:
         obj_split = obj.image.name.split(os.sep)
-        print(obj_split)
         obj_split[2] = new_name
         obj.image.name = os.path.join(*obj_split)
-        print(obj.image.name)
         obj.save()

@@ -35,42 +35,47 @@ class PointageViewSet(viewsets.ModelViewSet):
     queryset = Pointage.objects.all()
     serializer_class = PointageSerializer
     pagination_class = StandardResultsSetPagination
-    filter_backends = [FilterSearch, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['person__name', ]
 
     # filter_fields = ['label', 'label__isnull', 'instate']
 
-    @action(detail=False, methods=['get'])
-    def filter_date(self, request):
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        queryset = self.filter_date(request, queryset)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def filter_date(self, request, queryset):
         # dateutil.parser.parse
         today = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
-        date1 = request.GET.get('date1')
-        date2 = request.GET.get('date2')
-        date = request.GET.get('date')
+        date1 = request.GET.get('date1', None)
+        date2 = request.GET.get('date2', None)
+        date = request.GET.get('date', None)
         if date1:
             try:
                 date1 = dateutil.parser.parse(date1)
                 date2 = dateutil.parser.parse(date2)
             except ValueError:
-                return Response("delete error", status=status.HTTP_400_BAD_REQUEST)
+                pass
             else:
-                queryset = Pointage.objects.filter(date_entree__range=[date1, date2])
+                queryset = queryset.filter(date_entree__range=[date1, date2])
         elif date:
             if date == 'today':
-                queryset = Pointage.objects.filter(date_entree__gte=today)
+                queryset = queryset.filter(date_entree__gte=today)
             elif date == 'week':
-                queryset = Pointage.objects.filter(date_entree__gte=today - timedelta(today.weekday()))
+                queryset = queryset.filter(date_entree__gte=today - timedelta(today.weekday()))
             elif date == 'month':
-                queryset = Pointage.objects.filter(today.replace(day=1))
+                queryset = queryset.filter(today.replace(day=1))
             elif date == 'year':
-                queryset = Pointage.objects.filter(date_entree__gte=today.replace(day=1, month=1))
-            else:
-                return Response("delete error", status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response("delete error", status=status.HTTP_400_BAD_REQUEST)
-        ser = PointageSerializer()
-
-        return Response({"Nothing!"})
+                queryset = queryset.filter(date_entree__gte=today.replace(day=1, month=1))
+        return queryset
+        # return Response("date error", status=status.HTTP_400_BAD_REQUEST)
 
 
 class FaceDataSetViewSet(viewsets.ModelViewSet):

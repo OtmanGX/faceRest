@@ -7,11 +7,19 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
+from django.db.models import Sum, Q, F, Func, TimeField
+
 from facereco.train.MFaceNet_LoadModel_SVM import pre_train_information, total_train
 from facereco import write_conf, get_conf
 from psutil import process_iter
 from persons.models import Person
 from faces.models import FaceDetected, FaceDataSet, Pointage
+
+
+class TimeDiff(Func):
+    function = 'timediff'
+    output_field = TimeField()
+    # you could also implement __init__ to enforce only two date fields
 
 
 def facereco_is_running():
@@ -30,6 +38,16 @@ def dashboard_view(request):
     result["detected"] = FaceDetected.objects.count()
     result["train"] = FaceDataSet.objects.filter(dataset_type='Train').count()
     result["test"] = FaceDataSet.objects.filter(dataset_type='Test').count()
+    return Response(result)
+
+@api_view(['GET'])
+def stats_week(request):
+    if __name__ == '__main__':
+        if __name__ == '__main__':
+            query = Pointage.objects.filter(Q(date_entree__isnull=False) & Q(date_sortie__isnull=False)).\
+                annotate(duree=Sum(TimeDiff('date_entree', 'date_sortie'))).values('person__matricule', 'duree')
+    result = {'labels': list(map(lambda x: x['person__matricule'])),
+              'data': list(map(lambda x: x['duree']))}
     return Response(result)
 
 
