@@ -5,6 +5,7 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 import shutil
 from facereco.train.MFaceNet_LoadModel_SVM import save_labels, clean, total_train
+from threading import Thread
 
 
 def upload_image_path(instance, filename):
@@ -45,7 +46,7 @@ def auto_rename_dataset(sender, instance, **kwargs):
                     pass
                 rename_dataset(instance.faces_dataset.all(), new_name)
                 if Person.objects.count() >= 2:
-                    total_train()
+                    Thread(target=total_train).start()
                     # save_labels()
 
 
@@ -67,7 +68,7 @@ def auto_delete_file(sender, instance, **kwargs):
         print("smaller than 2")
         clean()
     else:
-        total_train()
+        Thread(target=total_train).start()
 
 
 def rename_dataset(objs, new_name):

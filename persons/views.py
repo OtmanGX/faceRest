@@ -13,7 +13,7 @@ class PersonViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.OrderingFilter, FilterSearch]
     search_fields = ['name', 'age']
     filter_fields = ['name', 'age', 'active']
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class LabelViewSet(viewsets.ModelViewSet):
