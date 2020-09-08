@@ -1,7 +1,9 @@
 from django.http.response import JsonResponse
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets, filters
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
+from rest_framework.response import Response
+
 from faceRest.filters import FilterSearch
 from .serializers import PersonSerializer, LabelSerializer
 from .models import Person, Label
@@ -13,7 +15,13 @@ class PersonViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.OrderingFilter, FilterSearch]
     search_fields = ['name', 'age']
     filter_fields = ['name', 'age', 'active']
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
+
+    @action(detail=False, methods=['get'], url_path="available")
+    def available_persons(self, request):
+        queryset = Person.objects.filter(available=True)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class LabelViewSet(viewsets.ModelViewSet):

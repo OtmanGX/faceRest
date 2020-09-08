@@ -56,7 +56,6 @@ class PersonSerializer(serializers.ModelSerializer):
             person.labels.set(labels)
         else:
             person = super().update(instance, validated_data)
-
         return person
 
     class Meta:

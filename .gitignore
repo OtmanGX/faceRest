@@ -212,3 +212,4 @@ Supprimerait system/migrations/__init__.py
 Supprimerait system/models.py
 Supprimerait system/tests.py
 Supprimerait system/views.py
+*/migrations

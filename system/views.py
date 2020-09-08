@@ -32,19 +32,19 @@ def facereco_is_running():
 @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
 def dashboard_view(request):
-    result = {}
-    result["persons"] = Person.objects.count()
-    result["pointage"] = Pointage.objects.count()
-    result["detected"] = FaceDetected.objects.count()
-    result["train"] = FaceDataSet.objects.filter(dataset_type='Train').count()
-    result["test"] = FaceDataSet.objects.filter(dataset_type='Test').count()
+    result = {"persons": Person.objects.count(), "pointage": Pointage.objects.count(),
+              "detected": FaceDetected.objects.count(),
+              "train": FaceDataSet.objects.filter(dataset_type='Train').count(),
+              "test": FaceDataSet.objects.filter(dataset_type='Test').count(),
+              "available_persons": Person.objects.filter(available=True).count()}
     return Response(result)
+
 
 @api_view(['GET'])
 def stats_week(request):
     if __name__ == '__main__':
         if __name__ == '__main__':
-            query = Pointage.objects.filter(Q(date_entree__isnull=False) & Q(date_sortie__isnull=False)).\
+            query = Pointage.objects.filter(Q(date_entree__isnull=False) & Q(date_sortie__isnull=False)). \
                 annotate(duree=Sum(TimeDiff('date_entree', 'date_sortie'))).values('person__matricule', 'duree')
     result = {'labels': list(map(lambda x: x['person__matricule'])),
               'data': list(map(lambda x: x['duree']))}
@@ -66,6 +66,7 @@ def train_view(request):
     result = total_train()
     return Response(result)
 
+
 @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
 def train_info_view(request):
@@ -75,12 +76,13 @@ def train_info_view(request):
     # serializer = SnippetSerializer(snippets, many=True)
     return Response(result)
 
-@api_view(['GET','POST'])
+
+@api_view(['GET', 'POST'])
 # @permission_classes([IsAuthenticated])
 def conf_view(request):
     if request.method == 'POST':
         print('POST')
-        try :
+        try:
             write_conf(**request.data)
             return Response({'method': 'POST'})
         except Exception as e:

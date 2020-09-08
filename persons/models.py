@@ -25,7 +25,9 @@ class Person(models.Model):
     unknown_number = models.SmallIntegerField(default=0, null=True)
     labels = models.ManyToManyField(Label, related_name='persons', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    last_updated = models.DateTimeField(auto_now_add=True)
+    last_time = models.DateTimeField(blank=False, null=True, default=None)
+    # last_updated = models.DateTimeField(auto_now_add=True)
+    available = models.BooleanField(default=False)
 
 
 @receiver(pre_save, sender=Person, dispatch_uid="update_person_name")
