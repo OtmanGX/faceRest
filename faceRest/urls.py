@@ -27,6 +27,8 @@ from system.views import train_info_view, train_view, conf_view, running_view, d
 
 router = routers.DefaultRouter()
 router.register(r'persons', persons_views.PersonViewSet, basename='Persons')
+router.register(r'temps', persons_views.TemperatureViewSet, basename='Temps')
+router.register(r'temps_person', persons_views.PersonTempViewSet, basename='TempsPerson')
 router.register(r'labels', persons_views.LabelViewSet, basename='Labels')
 router.register(r'detfaces', faces_views.FaceDetectedViewSet, basename='detfaces')
 router.register(r'dataset', faces_views.FaceDataSetViewSet, basename='dataset')

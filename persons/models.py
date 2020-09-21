@@ -9,7 +9,7 @@ from threading import Thread
 
 
 def upload_image_path(instance, filename):
-    return os.sep.join(["avatars", filename]);
+    return os.sep.join(["avatars", filename])
 
 
 class Label(models.Model):
@@ -28,6 +28,15 @@ class Person(models.Model):
     last_time = models.DateTimeField(blank=False, null=True, default=None)
     # last_updated = models.DateTimeField(auto_now_add=True)
     available = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
+
+class Temperature(models.Model):
+    val = models.FloatField(blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    person = models.ForeignKey(Person, related_name='temperatures', on_delete=models.CASCADE)
 
 
 @receiver(pre_save, sender=Person, dispatch_uid="update_person_name")

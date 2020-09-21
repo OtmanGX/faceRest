@@ -5,8 +5,8 @@ from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 
 from faceRest.filters import FilterSearch
-from .serializers import PersonSerializer, LabelSerializer
-from .models import Person, Label
+from .serializers import PersonSerializer, LabelSerializer, TemperatureSerializer, PersonTempSerializer
+from .models import Person, Label, Temperature
 
 
 class PersonViewSet(viewsets.ModelViewSet):
@@ -31,9 +31,19 @@ class LabelViewSet(viewsets.ModelViewSet):
     filter_fields = ['name']
 
 
+class TemperatureViewSet(viewsets.ModelViewSet):
+    queryset = Temperature.objects.all()
+    serializer_class = TemperatureSerializer
+
+
+class PersonTempViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Person.objects.all()
+    serializer_class = PersonTempSerializer
+
+
 class PersonDetail(viewsets.generics.GenericAPIView,
-                   viewsets.mixins.RetrieveModelMixin
-    , viewsets.mixins.DestroyModelMixin,
+                   viewsets.mixins.RetrieveModelMixin,
+                   viewsets.mixins.DestroyModelMixin,
                    viewsets.mixins.UpdateModelMixin):
     queryset = Person.objects.all()
     serializer_class = PersonSerializer

@@ -4,13 +4,28 @@ from rest_framework import serializers
 from rest_framework.fields import empty
 from rest_framework.utils import json
 import os
-from .models import Person, Label
+from .models import Person, Label, Temperature
 
 
 class LabelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Label
         fields = ['name', 'persons']
+
+
+class TemperatureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Temperature
+        fields = '__all__'
+
+
+class PersonTempSerializer(serializers.ModelSerializer):
+    # temperatures = serializers.ListSerializer()
+
+    class Meta:
+        model = Person
+        fields = ['name', 'temperatures']
+        depth = 1
 
 
 class LabelSerializer2(serializers.ModelSerializer):
