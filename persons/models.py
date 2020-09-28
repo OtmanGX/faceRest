@@ -37,6 +37,7 @@ class Temperature(models.Model):
     val = models.FloatField(blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     person = models.ForeignKey(Person, related_name='temperatures', on_delete=models.CASCADE)
+    distance = models.FloatField(default=0)
 
 
 @receiver(pre_save, sender=Person, dispatch_uid="update_person_name")
